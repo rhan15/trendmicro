@@ -5,6 +5,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+Public
 # Virtual Environment
 venv/
 .venv/
