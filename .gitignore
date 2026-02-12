@@ -1,0 +1,103 @@
+# ========================================
+# Python
+# ========================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# Distribution / Packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Logs
+*.log
+
+# SQLite database (jika pakai)
+*.sqlite3
+*.db
+
+# Configuration & Secrets
+instance/
+*.env
+.env.*
+.env.local
+secrets.json
+
+# Flask cache & session
+flask_session/
+cache/
+*.cache
+
+# Byte-compiled C extensions
+*.so
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nose2-*.xml
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Profiling data
+.prof
+
+# Pycharm
+*.iml
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# Ignore environment variables / secrets
+.env
+.env.*
