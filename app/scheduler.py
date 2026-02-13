@@ -11,11 +11,11 @@ def init_scheduler(app):
         proced_spread_dt9,
         trigger="cron",
         day_of_week="*",
-        hour="16",
-        minute="41",
+        hour="12",
+        minute="00",
         id="JOB_DT9",
         replace_existing=True,
-        misfire_grace_time=300
+        misfire_grace_time=3000
     )
 
     if not scheduler.running:
