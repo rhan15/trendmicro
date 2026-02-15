@@ -9,27 +9,6 @@ import logging
 from pathlib import Path
 from datetime import datetime
 
-# CHECK FOLDER LOGNYA
-log_dir = Path("logs")
-log_dir.mkdir(exist_ok=True)
-
-# BUAT FORMAT TANGGAL YYYY-MM-DD UNTUK NAMA FILE LOGNYA
-today_str = datetime.now().strftime("%Y-%m-%d")
-log_file = log_dir / f"dt9_job_{today_str}.log"
-
-# SETUP LOGGERNYA
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[
-        logging.FileHandler(log_file, encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-
-logger = logging.getLogger(__name__)
-
-
 main = Blueprint('main', __name__)
 
 @main.route('/')

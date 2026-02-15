@@ -58,26 +58,25 @@ def proced_spread_dt9():
                 # Buat path Target Folder Kode Toko
                 print("KODE_TOKO :", kodeToko)
                 directoryTargetKodeToko = baseDirectory.joinpath(kodeToko, "in")
+                print("✨directoryTargetKodeToko :", directoryTargetKodeToko)
                 
                 # CHECK FOLDER EXIST KALAU TIDAK MAKA LOG DAN SKIP
                 if not directoryTargetKodeToko.exists():
-                    print(f"⛔ Folder toko tidak ada: {directoryTargetKodeToko} → SKIP")
-                    logger.error(f"Folder toko tidak ada: {directoryTargetKodeToko} → SKIP")
+                    logger.error(f"⛔ Folder toko tidak ada: {directoryTargetKodeToko} → SKIP")
                     continue
 
-                print("✨directoryTargetKodeToko :", directoryTargetKodeToko)
 
                 # os.makedirs(directoryTargetKodeToko, exist_ok=True)
-                # os.makedirs(directoryBackupToko, exist_ok=True)
 
+                
                 # FULL PATH SOURCE
                 source_path = os.path.join(directoryDT9, file)
 
                 shutil.copy(source_path, directoryTargetKodeToko)
-                print(f"📂 File copied to subfolder {directoryTargetKodeToko}")
+                logger.info(f"📂 File copied to subfolder {directoryTargetKodeToko}")
                 shutil.move(source_path, directoryBackupToko)
-                print(f"📂 File moved to backupToko {directoryBackupToko}")
-                print("\n")
+                logger.info(f"📂 File moved to backupToko {directoryBackupToko}")
+                logger.info("\n")
 
             except Exception as e:
                 logger.error(f"Gagal proses file {file} | {str(e)}")

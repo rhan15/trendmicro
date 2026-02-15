@@ -1,8 +1,6 @@
-from app.packages import os, load_dotenv, Path
+from app.packages import os, Path
 import psycopg2
 
-current_directory = Path.cwd()
-load_dotenv(current_directory / "config" / ".env")
 def getPostgresConnection():
     try:
         conn = psycopg2.connect(

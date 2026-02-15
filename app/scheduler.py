@@ -20,7 +20,10 @@ def init_scheduler(app):
 
     if not scheduler.running:
         scheduler.start()
+        print("============================= LIST SCHEDULED JOB =============================")
         for job in scheduler.get_jobs():
             print(job.id, job.next_run_time)
+
+        print("\n")
 
 
