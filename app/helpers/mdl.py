@@ -168,16 +168,13 @@ def move_replace(src: Path, dst_dir: Path,  logger: logging.Logger):
     except Exception as e:
         raise
 
-def get_base_dir():
+def get_base_dir() -> Path:
     if getattr(sys, 'frozen', False):
-        # mode exe
-        if hasattr(sys, '_MEIPASS'):
-            return Path(sys._MEIPASS)
-        else:
-            return Path(sys.executable).parent
+        # EXE mode
+        return Path(sys.executable).parent
     else:
-        # mode python normal
-        return Path(__file__).resolve().parent.parent
+        # Python mode
+        return Path(__file__).resolve().parent.parent.parent
     
 def setup_logger(name: str = "spread_dt9") -> logging.Logger:
     base_dir = get_base_dir()
