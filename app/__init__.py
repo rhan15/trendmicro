@@ -31,6 +31,9 @@ def create_app():
 # Import routes
     from .routes import main
     from app.Routes.spread_dt9 import spread_dt9_bp
+    from app.Routes.test import test_bp
+    
+    app.register_blueprint(test_bp)
     app.register_blueprint(spread_dt9_bp)
 
 

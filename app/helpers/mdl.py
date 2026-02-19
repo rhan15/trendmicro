@@ -1,6 +1,11 @@
+import sys
 from app.packages import os, shutil
+from datetime import datetime
 from app.helpers.handlerResponse import *
 from app.helpers.createConnection import getPostgresConnection
+from logging.handlers import TimedRotatingFileHandler
+from pathlib import Path
+import logging
 
 #GET CONNECTION
 oConn = getPostgresConnection()
@@ -124,3 +129,93 @@ def getEnvVariable(key, default=None):
 
 #     sqlCursor.close()
 #     connection.close()
+
+
+def parse_dt9_filename(filename: str) -> datetime:
+    try:
+        # contoh: DT96219O.5CH
+
+        # FIX karena slicing harus jelas
+        year_last_digit = filename[3]
+        month_hex = filename[4]
+        day = filename[5:7] #5:7 artinya ambil 5 sampai 6
+
+        # convert HEX ke DEC
+        month = int(month_hex, 16)
+
+        # asumsi abad sekarang (2000–2099)
+        current_year = datetime.now().year
+        year = int(str(current_year)[:3] + year_last_digit)
+
+        result = datetime(year, month, int(day))
+        print("DT9 TANGGAL= ",result.strftime("%d%m%Y"))
+        return result
+
+    except Exception as e:
+        raise ValueError(f"Format filename tidak valid: {filename}")
+    
+def move_replace(src: Path, dst_dir: Path,  logger: logging.Logger):
+    try:
+        dst_file = dst_dir / src.name
+
+        if dst_file.exists():
+            dst_file.unlink()
+            logger.warning(f"⚠ File sudah ada, dihapus dari : {dst_dir}")
+
+        shutil.move(str(src), str(dst_file))
+
+        return dst_file
+    except Exception as e:
+        raise
+
+def get_base_dir():
+    if getattr(sys, 'frozen', False):
+        # mode exe
+        if hasattr(sys, '_MEIPASS'):
+            return Path(sys._MEIPASS)
+        else:
+            return Path(sys.executable).parent
+    else:
+        # mode python normal
+        return Path(__file__).resolve().parent.parent
+    
+def setup_logger(name: str = "spread_dt9") -> logging.Logger:
+    base_dir = get_base_dir()
+
+    log_dir = base_dir / "logs"
+    log_dir.mkdir(exist_ok=True)
+
+    log_file = log_dir / "Spread_dt9_job.log"
+
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+
+    # prevent duplicate handler
+    if logger.handlers:
+        return logger
+
+    formatter = logging.Formatter(
+        "%(asctime)s | %(levelname)s | %(message)s"
+    )
+
+    file_handler = TimedRotatingFileHandler(
+        filename=log_file,
+        when="midnight",
+        interval=1,
+        backupCount=90,
+        encoding="utf-8"
+    )
+
+    file_handler.suffix = "%Y-%m-%d.log"
+    file_handler.setFormatter(formatter)
+
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+
+    logger.propagate = False
+
+    return logger
+

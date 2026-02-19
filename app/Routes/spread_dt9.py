@@ -3,33 +3,17 @@ from app.packages import os,Path,shutil
 from flask import Flask
 from flask import Blueprint,request
 from app.helpers.handlerResponse import *
+from app.helpers.mdl import *
 import logging
 from pathlib import Path
 from datetime import datetime
+from app.helpers.mdl import setup_logger
 
-# CHECK FOLDER LOGNYA
-log_dir = Path("logs")
-log_dir.mkdir(exist_ok=True)
-
-# BUAT FORMAT TANGGAL YYYY-MM-DD UNTUK NAMA FILE LOGNYA
-today_str = datetime.now().strftime("%Y-%m-%d")
-log_file = log_dir / f"Spread_dt9_job_{today_str}.log"
-
-# SETUP LOGGERNYA
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[
-        logging.FileHandler(log_file, encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-
-logger = logging.getLogger(__name__)
+logger = setup_logger(name="spread_dt9")
 
 
 
-spread_dt9_bp = Blueprint("master_rak", __name__)
+spread_dt9_bp = Blueprint("spread_dt9", __name__)
 @spread_dt9_bp.route('/proced-spread-dt9')
 def spread_dt9():
    return proced_spread_dt9()
@@ -51,7 +35,9 @@ def proced_spread_dt9():
             
             try:
                 file = file.name
-                    
+                dt9Date = parse_dt9_filename(file)
+                dt9Date = dt9Date.strftime("%d%m%Y")
+
                 last_5 = file[-5:]          # ambil 5 karakter terakhir
                 kodeToko = last_5.replace('.', '')  # hapus titik
 
@@ -65,6 +51,11 @@ def proced_spread_dt9():
                     logger.error(f"⛔ Folder toko tidak ada: {directoryTargetKodeToko} → SKIP")
                     continue
 
+                # BUAT PATH BACKUP TOKO SORT BY DT9 DATE, ABISITU MAKA BUAT FOLDER BARU KALAU NGGA ADA
+                directoryBackupTokoByDate = directoryBackupToko.joinpath(dt9Date)
+                if not directoryBackupTokoByDate.exists():
+                    os.makedirs(directoryBackupTokoByDate, exist_ok=True)
+
 
                 # os.makedirs(directoryTargetKodeToko, exist_ok=True)
 
@@ -73,9 +64,9 @@ def proced_spread_dt9():
                 source_path = os.path.join(directoryDT9, file)
 
                 shutil.copy(source_path, directoryTargetKodeToko)
-                logger.info(f"📂 File copied to subfolder {directoryTargetKodeToko}")
-                shutil.move(source_path, directoryBackupToko)
-                logger.info(f"📂 File moved to backupToko {directoryBackupToko}")
+                # logger.info(f"📂 File copied to subfolder {directoryTargetKodeToko}")
+                move_replace(Path(source_path), directoryBackupTokoByDate, logger)
+                # logger.info(f"📂 File moved to backupToko {directoryBackupTokoByDate}")
                 logger.info("\n")
 
             except Exception as e:
