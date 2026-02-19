@@ -64,9 +64,9 @@ def proced_spread_dt9():
                 source_path = os.path.join(directoryDT9, file)
 
                 shutil.copy(source_path, directoryTargetKodeToko)
-                # logger.info(f"📂 File copied to subfolder {directoryTargetKodeToko}")
+                logger.info(f"🎄 File copied to subfolder {directoryTargetKodeToko}")
                 move_replace(Path(source_path), directoryBackupTokoByDate, logger)
-                # logger.info(f"📂 File moved to backupToko {directoryBackupTokoByDate}")
+                logger.info(f"📂 File moved to backupToko {directoryBackupTokoByDate}")
                 logger.info("\n")
 
             except Exception as e:
