@@ -43,10 +43,16 @@ def proced_spread_dt9():
 
                 # Buat path Target Folder Kode Toko
                 print("KODE_TOKO :", kodeToko)
+                directoryKodeToko = baseDirectory.joinpath(kodeToko)
+                print("✨directoryKodeToko :", directoryKodeToko)
                 directoryTargetKodeToko = baseDirectory.joinpath(kodeToko, "in")
                 print("✨directoryTargetKodeToko :", directoryTargetKodeToko)
                 
                 # CHECK FOLDER EXIST KALAU TIDAK MAKA LOG DAN SKIP
+                if not directoryKodeToko.exists():
+                    logger.error(f"⛔ Folder toko tidak ada: {directoryKodeToko} → SKIP")
+                    continue
+
                 if not directoryTargetKodeToko.exists():
                     logger.error(f"⛔ Folder toko tidak ada: {directoryTargetKodeToko} → SKIP")
                     continue
@@ -63,8 +69,10 @@ def proced_spread_dt9():
                 # FULL PATH SOURCE
                 source_path = os.path.join(directoryDT9, file)
 
+                shutil.copy(source_path, directoryKodeToko)
+                logger.info(f"🎄 File copied to storecode {directoryKodeToko}")
                 shutil.copy(source_path, directoryTargetKodeToko)
-                logger.info(f"🎄 File copied to subfolder {directoryTargetKodeToko}")
+                logger.info(f"🍕 File copied to subfolder {directoryTargetKodeToko}")
                 move_replace(Path(source_path), directoryBackupTokoByDate, logger)
                 logger.info(f"📂 File moved to backupToko {directoryBackupTokoByDate}")
                 logger.info("\n")
