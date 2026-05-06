@@ -32,9 +32,11 @@ def create_app():
     from .routes import main
     from app.Routes.spread_dt9 import spread_dt9_bp
     from app.Routes.test import test_bp
+    from app.Routes.absensi_dt9 import absensi_dt9_bp
     
     app.register_blueprint(test_bp)
     app.register_blueprint(spread_dt9_bp)
+    app.register_blueprint(absensi_dt9_bp)
 
 
     from app.scheduler import init_scheduler
