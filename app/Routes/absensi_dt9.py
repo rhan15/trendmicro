@@ -35,9 +35,14 @@ def proced_absensi_dt9():
 
     FTP_dt9Files = [f for f in files if f.startswith("DT9")]
 
-    PathFolderToko = Path(os.getenv("DIRECTORY_DT9"))
+    baseDirectory = Path(os.getenv("PUBLIC_DIR"))
+    directoryBackupToko = baseDirectory.joinpath(F"dt9_backup/{datetime.now():%d%m%Y}")
+    if not directoryBackupToko.exists():
+        logger.error(f"⛔ Folder toko tidak ada: {directoryBackupToko} → SKIP")
+        return f"⛔ Folder toko tidak ada: {directoryBackupToko} → SKIP"
+    
     SFTP_dt9Files = [
-        f.name for f in PathFolderToko.iterdir() if f.is_file() and f.name.startswith("DT9")
+        f.name for f in directoryBackupToko.iterdir() if f.is_file() and f.name.startswith("DT9")
     ]
 
     missing_toko = list(set(FTP_dt9Files) - set(SFTP_dt9Files))
