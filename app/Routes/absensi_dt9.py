@@ -35,6 +35,7 @@ def proced_absensi_dt9():
 
     FTP_dt9Files = [f for f in files if f.startswith("DT9")]
 
+    DIRECTORY_DT9 = Path(os.getenv("DIRECTORY_DT9"))
     baseDirectory = Path(os.getenv("PUBLIC_DIR"))
     directoryBackupToko = baseDirectory.joinpath(F"dt9_backup/{datetime.now():%d%m%Y}")
     if not directoryBackupToko.exists():
@@ -45,14 +46,36 @@ def proced_absensi_dt9():
         f.name for f in directoryBackupToko.iterdir() if f.is_file() and f.name.startswith("DT9")
     ]
 
-    missing_toko = list(set(FTP_dt9Files) - set(SFTP_dt9Files))
+    missing_dt9 = list(set(FTP_dt9Files) - set(SFTP_dt9Files))
+
+    downloaded_files = []
+    failed_files = []
+
+    for filename in missing_dt9:
+        local_path = DIRECTORY_DT9 / filename
+
+        try:
+            with open(local_path, "wb") as f:
+                ftp.retrbinary(f"RETR {filename}", f.write)
+
+            print(f"✅ Downloaded: {filename}")
+            downloaded_files.append(filename)
+
+        except Exception as e:
+            print(f"❌ Gagal download {filename}: {e}")
+            failed_files.append({
+                "file": filename,
+                "error": str(e)
+            })
 
     return {
         "status": "success",
-        "toko_kurang": missing_toko,
-        "total_toko_kurang": len(missing_toko),
+        "toko_kurang": missing_dt9,
+        "total_toko_kurang": len(missing_dt9),
         "total_dt9_ftp": len(FTP_dt9Files),
         "total_dt9_sftp": len(SFTP_dt9Files),
+        "downloaded": downloaded_files,
+        "failed": failed_files
     }
 
 
