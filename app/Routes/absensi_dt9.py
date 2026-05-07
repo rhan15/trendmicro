@@ -7,8 +7,6 @@ from ftplib import FTP
 
 logger = setup_logger(name="absensi_dt9")
 
-
-
 absensi_dt9_bp = Blueprint("absensi_dt9", __name__)
 @absensi_dt9_bp.route('/proced-absensi-dt9')
 def absensi_dt9():
@@ -58,17 +56,17 @@ def proced_absensi_dt9():
             with open(local_path, "wb") as f:
                 ftp.retrbinary(f"RETR {filename}", f.write)
 
-            print(f"✅ Downloaded: {filename}")
+            logger.info(f"✅ Downloaded: {filename}")
             downloaded_files.append(filename)
 
         except Exception as e:
-            print(f"❌ Gagal download {filename}: {e}")
+            logger.error(f"❌ Gagal download {filename}: {e}")
             failed_files.append({
                 "file": filename,
                 "error": str(e)
             })
 
-    return {
+    response = {
         "status": "success",
         "toko_kurang": missing_dt9,
         "total_toko_kurang": len(missing_dt9),
@@ -77,6 +75,9 @@ def proced_absensi_dt9():
         "downloaded": downloaded_files,
         "failed": failed_files
     }
+
+    logger.info(response)
+    return response
 
 
    except Exception as e:

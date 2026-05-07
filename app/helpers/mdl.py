@@ -182,7 +182,7 @@ def setup_logger(name: str = "spread_dt9") -> logging.Logger:
     log_dir = base_dir / "logs"
     log_dir.mkdir(exist_ok=True)
 
-    log_file = log_dir / "Spread_dt9_job.log"
+    log_file = log_dir / f"{name}.log"
 
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
@@ -203,7 +203,7 @@ def setup_logger(name: str = "spread_dt9") -> logging.Logger:
         encoding="utf-8"
     )
 
-    file_handler.suffix = "%Y-%m-%d.log"
+    file_handler.suffix = f"{name}_%Y-%m-%d.log"
     file_handler.setFormatter(formatter)
 
     console_handler = logging.StreamHandler()

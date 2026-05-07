@@ -1,5 +1,6 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.Routes.spread_dt9 import *
+from app.Routes.absensi_dt9 import *
 from pytz import timezone
 
 scheduler = BackgroundScheduler(timezone="Asia/Jakarta")
@@ -14,6 +15,16 @@ def init_scheduler(app):
         hour="*/2",   # tiap 2 jam
         minute="0",   # menit ke 00
         id="JOB_SPREAD_DT9",
+        replace_existing=True,
+        misfire_grace_time=3000
+    )
+    
+    scheduler.add_job(
+        absensi_dt9,
+        trigger="cron",
+        hour="6,7,8",
+        minute="0",
+        id="JOB_ABSENSI_DT9",
         replace_existing=True,
         misfire_grace_time=3000
     )
